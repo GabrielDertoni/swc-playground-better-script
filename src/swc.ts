@@ -288,10 +288,10 @@ export async function loadSwc(_version: string): Promise<SwcModule> {
   const entryFileName = 'wasm-web.js';
   const swcModule: SwcModule = await import(
     /* webpackIgnore: true */
-    `http://localhost:8000/${entryFileName}`
+    `/wasm/${entryFileName}`
   )
   await swcModule.default()
-  return swcModule
+  return swcModule;
 }
 
 export type TransformationResult = Result<TransformationOutput, string>
