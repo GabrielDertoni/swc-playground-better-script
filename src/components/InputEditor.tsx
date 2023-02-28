@@ -3,7 +3,7 @@ import type { editor } from 'monaco-editor'
 import Editor, { useMonaco } from '@monaco-editor/react'
 import { useAtom } from 'jotai'
 import { Box, Button, Flex, Heading, useToast, HStack } from '@chakra-ui/react'
-import { CgShare, CgFileDocument } from 'react-icons/cg'
+import { CgShare } from 'react-icons/cg'
 import { Base64 } from 'js-base64'
 import { gzip, ungzip } from 'pako'
 import { codeAtom, swcConfigAtom } from '../state'
@@ -13,33 +13,10 @@ import {
   useBorderColor,
   useMonacoThemeValue,
 } from '../utils'
-import { swcVersionAtom, type Config } from '../swc'
+import { swcVersionAtom } from '../swc'
 import type { ParserResult, TransformationResult } from '../swc'
 
 const STORAGE_KEY = 'v1.code'
-
-function getIssueReportUrl({
-  code,
-  version,
-  config,
-  playgroundLink,
-}: {
-  code: string
-  version: string
-  config: Config
-  playgroundLink: string
-}): string {
-  const reportUrl = new URL(
-    `https://github.com/swc-project/swc/issues/new?assignees=&labels=C-bug&template=bug_report.yml`
-  )
-
-  reportUrl.searchParams.set('code', code)
-  reportUrl.searchParams.set('config', JSON.stringify(config, null, 2))
-  reportUrl.searchParams.set('repro-link', playgroundLink)
-  reportUrl.searchParams.set('version', version)
-
-  return reportUrl.toString()
-}
 
 interface Props {
   output: TransformationResult | ParserResult
@@ -116,32 +93,6 @@ export default function InputEditor({ output }: Props) {
     url.searchParams.set('config', encodedConfig)
     return url.toString()
   }, [code, swcConfig, swcVersion])
-
-  const issueReportUrl = useMemo(
-    () =>
-      getIssueReportUrl({
-        code,
-        config: swcConfig,
-        version: swcVersion,
-        playgroundLink: shareUrl,
-      }),
-    [code, swcConfig, swcVersion, shareUrl]
-  )
-
-  const handleIssueReportClick = () => {
-    if (code.length > 2000) {
-      toast({
-        title: 'Code too long',
-        description:
-          'Your input is too large to share. Please copy the code and paste it into the issue.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      })
-      return
-    }
-    window.open(issueReportUrl, '_blank')
-  }
 
   const handleShare = async () => {
     if (!navigator.clipboard) {

@@ -107,16 +107,6 @@ export default function Configuration() {
     setSwcConfig((config) => ({ ...config, isModule }))
   }
 
-  const handleToggleJSX = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSwcConfig((config) => ({
-      ...config,
-      jsc: {
-        ...config.jsc,
-        parser: { ...config.jsc.parser, jsx: event.target.checked },
-      },
-    }))
-  }
-
   const handleToggleMinify = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSwcConfig((config) => ({
       ...config,

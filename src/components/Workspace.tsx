@@ -10,7 +10,6 @@ import { loadSwc, parse, swcVersionAtom, transform, transpileBetterScriptSync } 
 import type { AST } from '../swc'
 
 import Configuration from './Configuration'
-import VersionSelect from './VersionSelect'
 import InputEditor from './InputEditor'
 import OutputEditor from './OutputEditor'
 
