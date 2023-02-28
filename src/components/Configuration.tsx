@@ -58,7 +58,7 @@ export default function Configuration() {
           ? config.jsc.parser.tsx
           : config.jsc.parser.jsx
       const parserOptions: ParserOptions =
-        event.target.value === 'typescript'
+        event.target.value == 'typescript'
           ? { syntax: 'typescript', tsx: jsxOrTsx }
           : { syntax: 'ecmascript', jsx: jsxOrTsx }
 
@@ -113,16 +113,6 @@ export default function Configuration() {
       jsc: {
         ...config.jsc,
         parser: { ...config.jsc.parser, jsx: event.target.checked },
-      },
-    }))
-  }
-
-  const handleToggleTSX = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSwcConfig((config) => ({
-      ...config,
-      jsc: {
-        ...config.jsc,
-        parser: { ...config.jsc.parser, tsx: event.target.checked },
       },
     }))
   }
@@ -205,8 +195,7 @@ export default function Configuration() {
               value={swcConfig.jsc.parser.syntax}
               onInput={handleLanguageChange}
             >
-              <option value="ecmascript">JavaScript</option>
-              <option value="typescript">TypeScript</option>
+              <option value="typescript">BetterScript</option>
             </Select>
           </FormControl>
           <FormControl isDisabled={swcConfig.env?.targets != null}>
@@ -254,29 +243,6 @@ export default function Configuration() {
               <option value="unknown">Unknown</option>
             </Select>
           </FormControl>
-          {swcConfig.jsc.parser.syntax === 'ecmascript' ? (
-            <FormControl display="flex" alignItems="center">
-              <Switch
-                id="swc-jsx"
-                isChecked={swcConfig.jsc.parser.jsx}
-                onChange={handleToggleJSX}
-              />
-              <FormLabel htmlFor="swc-jsx" ml="2" mb="0">
-                JSX
-              </FormLabel>
-            </FormControl>
-          ) : (
-            <FormControl display="flex" alignItems="center">
-              <Switch
-                id="swc-tsx"
-                isChecked={swcConfig.jsc.parser.tsx}
-                onChange={handleToggleTSX}
-              />
-              <FormLabel htmlFor="swc-tsx" ml="2" mb="0">
-                TSX
-              </FormLabel>
-            </FormControl>
-          )}
           <FormControl display="flex" alignItems="center">
             <Switch
               id="swc-loose"

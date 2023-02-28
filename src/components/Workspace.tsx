@@ -6,7 +6,7 @@ import styled from '@emotion/styled'
 import { loader } from '@monaco-editor/react'
 import { Err } from 'ts-results'
 import { codeAtom, fileNameAtom, swcConfigAtom } from '../state'
-import { loadSwc, parse, swcVersionAtom, transform } from '../swc'
+import { loadSwc, parse, swcVersionAtom, transform, transpileBetterScriptSync } from '../swc'
 import type { AST } from '../swc'
 
 import Configuration from './Configuration'
@@ -49,7 +49,7 @@ export default function Workspace() {
   const [code] = useAtom(codeAtom)
   const [swcConfig] = useAtom(swcConfigAtom)
   const [fileName] = useAtom(fileNameAtom)
-  const [viewMode, setViewMode] = useState('code')
+  const [viewMode, setViewMode] = useState('typescript')
   const output = useMemo(() => {
     if (error) {
       return Err(String(error))
@@ -62,7 +62,9 @@ export default function Workspace() {
     switch (viewMode) {
       case 'ast':
         return parse({ code, config: swcConfig, swc })
-      case 'code':
+      case 'typescript':
+        return transpileBetterScriptSync({ code, fileName, config: swcConfig, swc })
+      case 'javascript':
       default:
         return transform({ code, fileName, config: swcConfig, swc })
     }
@@ -104,7 +106,6 @@ export default function Workspace() {
     <Main>
       <VStack spacing={4} alignItems="unset" gridArea="sidebar">
         <Configuration />
-        <VersionSelect isLoadingSwc={!swc && !error} />
       </VStack>
       <InputEditor output={output} />
       <OutputEditor

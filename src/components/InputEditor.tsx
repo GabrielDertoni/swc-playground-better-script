@@ -187,13 +187,6 @@ export default function InputEditor({ output }: Props) {
           Input
         </Heading>
         <HStack spacing="10px">
-          <Button
-            size="xs"
-            leftIcon={<CgFileDocument />}
-            onClick={handleIssueReportClick}
-          >
-            Report Issue
-          </Button>
           <Button size="xs" leftIcon={<CgShare />} onClick={handleShare}>
             Share
           </Button>

@@ -8,6 +8,7 @@ interface SwcModule {
   default(): Promise<unknown>
   parseSync(code: string, options: ParseOnlyOptions): AST
   transformSync(code: string, options: Config): TransformationOutput
+  transpileBetterScriptSync(code: string, options: Config): TransformationOutput
 }
 
 export interface Config {
@@ -283,14 +284,11 @@ export function getPackageName(version: string) {
     : '@swc/wasm-web'
 }
 
-export async function loadSwc(version: string): Promise<SwcModule> {
-  const packageName = getPackageName(version)
-  const entryFileName = semver.gt(version, '1.2.165')
-    ? 'wasm-web.js'
-    : 'wasm.js'
+export async function loadSwc(_version: string): Promise<SwcModule> {
+  const entryFileName = 'wasm-web.js';
   const swcModule: SwcModule = await import(
     /* webpackIgnore: true */
-    `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${entryFileName}`
+    `http://localhost:8000/${entryFileName}`
   )
   await swcModule.default()
   return swcModule
@@ -311,6 +309,24 @@ export function transform({
 }): TransformationResult {
   try {
     return Ok(swc.transformSync(code, { ...config, filename: fileName }))
+  } catch (error) {
+    return handleSwcError(error)
+  }
+}
+
+export function transpileBetterScriptSync({
+  code,
+  config,
+  fileName,
+  swc,
+}: {
+  code: string
+  fileName: string
+  config: Config
+  swc: SwcModule
+}): TransformationResult {
+  try {
+    return Ok(swc.transpileBetterScriptSync(code, { ...config, filename: fileName }));
   } catch (error) {
     return handleSwcError(error)
   }

@@ -67,11 +67,21 @@ export default function OutputEditor({
   }
 
   const outputContent = stringifyOutput(output)
-  const editorLanguage = output.err
-    ? 'text'
-    : viewMode === 'code'
-    ? 'javascript'
-    : 'json'
+  let editorLanguage: string;
+  if (output.err) {
+    editorLanguage = 'text';
+  } else {
+    switch (viewMode) {
+      case 'betterscript':
+        editorLanguage = 'typescript';
+      case 'javascript':
+        editorLanguage = 'javascript';
+      case 'ast':
+        editorLanguage = 'json';
+      default:
+        editorLanguage = 'text';
+    }
+  }
 
   return (
     <Flex direction="column" gridArea="output" minW={0} minH={0}>
@@ -88,7 +98,8 @@ export default function OutputEditor({
             value={viewMode}
             onChange={handleViewModeChange}
           >
-            <option value="code">Compiled Code</option>
+            <option value="typescript">TypeScript</option>
+            <option value="javascript">Compiled Code</option>
             <option value="ast">AST</option>
           </Select>
         </Flex>
@@ -98,7 +109,7 @@ export default function OutputEditor({
           value={outputContent}
           language={editorLanguage}
           defaultLanguage="javascript"
-          path={viewMode === 'code' ? 'output.js' : 'output.json'}
+          path={viewMode === 'javascript' ? 'output.js' : 'output.json'}
           theme={monacoTheme}
           options={editorOptions}
         />
